@@ -15,7 +15,7 @@ import Animated, {
 
 const AnimatedSearchBar = ({dataFromChild}) => {
   const animation = useSharedValue(0);
-  const [valueForIcon, setValueForIcon] = useState(0);
+  const [valueForIcon, setValueForIcon] = useState(1);
   const animatedStyles = useAnimatedStyle(() => {
     return {
       width:
@@ -34,6 +34,7 @@ const AnimatedSearchBar = ({dataFromChild}) => {
         }}></TextInput>
 
       <TouchableOpacity
+        style={{backgroundColor: 'lightgray', borderRadius: 15}}
         onPress={() => {
           if (animation.value == 1) {
             animation.value = 0;
@@ -49,7 +50,6 @@ const AnimatedSearchBar = ({dataFromChild}) => {
               ? require('../Assets/search1.png')
               : require('../Assets/multiply.png')
           }
-          //  style={{width: 300, height: 300}}
         />
       </TouchableOpacity>
     </Animated.View>
@@ -60,17 +60,19 @@ export default AnimatedSearchBar;
 
 const styles = StyleSheet.create({
   img: {
-    with: 20,
+    width: 20,
     height: 100,
   },
   inner: {
     flexDirection: 'row',
+    alignItems: 'flex-end',
     backgroundColor: 'lightgray',
-    width: '85%',
+    width: '100%',
     height: 50,
+    borderRadius: 15,
   },
   infield: {
-    width: '85%',
+    width: '92%',
     height: 50,
     // backgroundColor: 'white',
   },

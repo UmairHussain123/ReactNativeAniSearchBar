@@ -15,7 +15,7 @@ const color = '#49454f';
 const HomeNavigation = () => {
   return (
     <Tab.Navigator
-      initialRouteName="Missed"
+      initialRouteName="Dail"
       activeColor="#49454f"
       inactiveColor="#49454f"
       barStyle={{backgroundColor: '#f3edf6'}}>
