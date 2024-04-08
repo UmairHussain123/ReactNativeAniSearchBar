@@ -5,17 +5,47 @@ import Dail from '../Screens/Dail';
 import Incoming from '../Screens/Incoming';
 import {NavigationContainer} from '@react-navigation/native';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
+//import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+//import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 const Tab = createMaterialBottomTabNavigator();
+const size = 20;
+const color = '#49454f';
 const HomeNavigation = () => {
   return (
     <Tab.Navigator
-      initialRouteName="Home"
-      activeColor="#f0edf6"
-      inactiveColor="#3e2465"
-      barStyle={{backgroundColor: '#694fad'}}>
-      <Tab.Screen name="Missed" component={Missed} />
-      <Tab.Screen name="Dail" component={Dail} />
-      <Tab.Screen name="Incoming" component={Incoming} />
+      initialRouteName="Missed"
+      activeColor="#49454f"
+      inactiveColor="#49454f"
+      barStyle={{backgroundColor: '#f3edf6'}}>
+      <Tab.Screen
+        name="Dail"
+        component={Dail}
+        options={{
+          tabBarIcon: () => {
+            return <Icon name="phone-dial" size={size} color={color} />;
+          },
+        }}
+      />
+      <Tab.Screen
+        name="Missed"
+        component={Missed}
+        options={{
+          tabBarIcon: () => {
+            return <Icon name="phone-missed" size={size} color={color} />;
+          },
+        }}
+      />
+      <Tab.Screen
+        name="Incoming"
+        component={Incoming}
+        options={{
+          tabBarIcon: () => {
+            return <Icon name="phone-incoming" size={size} color={color} />;
+          },
+        }}
+      />
     </Tab.Navigator>
   );
 };
