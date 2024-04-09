@@ -4,12 +4,16 @@ import {
   View,
   PermissionsAndroid,
   FlatList,
+  Linking,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import AnimatedSearchBar from '../Component/AnimatedSearchBar';
 import CallLog from 'react-native-call-log';
+import {Avatar, IconButton} from 'react-native-paper';
+import call from 'react-native-phone-call';
 const Dail = () => {
   const [listData, setListDate] = useState([]);
+
   async function requestCallLogPermission() {
     try {
       const granted = await PermissionsAndroid.request(
@@ -24,7 +28,7 @@ const Dail = () => {
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         console.log('Call log permission granted');
-        CallLog.loadAll().then(c => {
+        CallLog.load(100).then(c => {
           setListDate(c);
         });
         CallLogs.load(10).then(c => console.log(c));
@@ -48,26 +52,57 @@ const Dail = () => {
   const ItemView = ({item}) => {
     return (
       // FlatList Item
-      <View>
-        <Text style={styles.textStyle}>
-          Name : {item.name ? item.name : 'NA'}
-          {'\n'}
-          DateTime : {item.dateTime}
-          {'\n'}
-          Duration : {item.duration}
-          {'\n'}
-          PhoneNumber : {item.phoneNumber}
-          {'\n'}
-          RawType : {item.rawType}
-          {'\n'}
-          Timestamp : {item.timestamp}
-          {'\n'}
-          Type : {item.type}
-        </Text>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          margin: 20,
+        }}>
+        <View style={styles.contactView}>
+          <View style={styles.avatarView}>
+            {item.name ? (
+              <Avatar.Text size={50} label={item.name.charAt(0)} />
+            ) : (
+              <Avatar.Image size={40} source={require('../Assets/user.png')} />
+            )}
+          </View>
+          <View style={styles.contactInfo}>
+            <Text style={{fontWeight: 'bold'}}>
+              {item.name ? item.name : item.phoneNumber}
+            </Text>
+            <Text> {item.dateTime}</Text>
+            {/* <Text>{item.duration}</Text> */}
+          </View>
+        </View>
+        <View>
+          <IconButton
+            icon="phone"
+            iconColor={'#6750a4'}
+            size={25}
+            onPress={() => {
+              const args = {
+                number: item.phoneNumber, // String value with the number to call
+                prompt: false, // Optional boolean property. Determines if the user should be prompted prior to the call
+                skipCanOpen: true, // Skip the canOpenURL check
+              };
+              // call(args).catch(console.error);
+
+              // for sms
+              // Linking.openURL(
+              //   `sms:/${item.phoneNumber}?addresses=${item.phoneNumber}&body=aa}`,
+              // );
+              // for wattsup
+              Linking.openURL('whatsapp://send?text=hello&phone=03022988532');
+            }}
+          />
+        </View>
       </View>
     );
   };
   const outgoing = listData.filter(obj => obj.type == 'OUTGOING');
+  const missed = listData.filter(obj => obj.type == 'MISSED');
+  const incoming = listData.filter(obj => obj.type == 'INCOMING');
+
   // console.log('>>>>>', newArray);
   const ItemSeparatorView = () => {
     return (
@@ -113,5 +148,13 @@ const styles = StyleSheet.create({
     // alignItems: 'center',
     alignSelf: 'flex-end',
     padding: 20,
+  },
+  contactView: {
+    flexDirection: 'row',
+    // marginTop: 20,
+  },
+  avatarView: {},
+  contactInfo: {
+    marginLeft: 10,
   },
 });
