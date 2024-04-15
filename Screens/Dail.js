@@ -6,14 +6,46 @@ import {
   FlatList,
   Linking,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import AnimatedSearchBar from '../Component/AnimatedSearchBar';
 import CallLog from 'react-native-call-log';
-import {Avatar, IconButton} from 'react-native-paper';
+import {ActivityIndicator, Avatar, IconButton} from 'react-native-paper';
 import call from 'react-native-phone-call';
+import randomColor from 'randomcolor';
+
 const Dail = () => {
   const [listData, setListDate] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [dataFromChild, setDataFromChild] = useState('');
 
+  const handleDataFromChild = useCallback(
+    data => {
+      setDataFromChild(data);
+    },
+    [dataFromChild],
+  );
+
+  console.log(dataFromChild);
+  const dateInTimestamp = () => {
+    const currentDate = new Date();
+
+    // Subtract one month from the current date
+    currentDate.setMonth(currentDate.getMonth() - 1);
+
+    // Get the ISO string representation of the date
+    const isoString = currentDate.toISOString();
+
+    console.log('/>/', isoString); // ISO 8601 format
+    const timestamp = Date.parse(isoString) / 1000; // Divide by 1000 to convert milliseconds to seconds
+
+    console.log('/>/', timestamp); // Output: 1571815432
+
+    return Math.floor(timestamp);
+  };
+
+  const filter = {
+    minTimestamp: dateInTimestamp(),
+  };
   async function requestCallLogPermission() {
     try {
       const granted = await PermissionsAndroid.request(
@@ -28,10 +60,12 @@ const Dail = () => {
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         console.log('Call log permission granted');
-        CallLog.load(100).then(c => {
+        CallLog.load(-1, filter).then(c => {
           setListDate(c);
+          setLoading(false);
         });
-        CallLogs.load(10).then(c => console.log(c));
+        //  CallLog.load(10).then(c => console.log(c));
+
         // You can now access the call log
       } else {
         console.log('Call log permission denied');
@@ -41,15 +75,17 @@ const Dail = () => {
       console.warn(err);
     }
   }
-  async function fetchCallLog() {
-    const callLog = await CallLog.load(10);
-    console.log('Call log:', callLog);
-  }
+  // async function fetchCallLog() {
+  //    const callLog = await CallLog.load(10);
+  //   // console.log('Call log:', callLog);
+  // }
   useEffect(() => {
     requestCallLogPermission();
-    fetchCallLog();
+    // fetchCallLog();
   }, []);
+
   const ItemView = ({item}) => {
+    const colorAvatar = randomColor();
     return (
       // FlatList Item
       <View
@@ -61,7 +97,11 @@ const Dail = () => {
         <View style={styles.contactView}>
           <View style={styles.avatarView}>
             {item.name ? (
-              <Avatar.Text size={50} label={item.name.charAt(0)} />
+              <Avatar.Text
+                size={50}
+                label={item.name.charAt(0)}
+                //  style={{backgroundColor: randomColor()}}
+              />
             ) : (
               <Avatar.Image size={40} source={require('../Assets/user.png')} />
             )}
@@ -70,7 +110,7 @@ const Dail = () => {
             <Text style={{fontWeight: 'bold'}}>
               {item.name ? item.name : item.phoneNumber}
             </Text>
-            <Text> {item.dateTime}</Text>
+            <Text> {item.dateTime} </Text>
             {/* <Text>{item.duration}</Text> */}
           </View>
         </View>
@@ -85,14 +125,14 @@ const Dail = () => {
                 prompt: false, // Optional boolean property. Determines if the user should be prompted prior to the call
                 skipCanOpen: true, // Skip the canOpenURL check
               };
-              // call(args).catch(console.error);
+              call(args).catch(console.error);
 
               // for sms
               // Linking.openURL(
               //   `sms:/${item.phoneNumber}?addresses=${item.phoneNumber}&body=aa}`,
               // );
               // for wattsup
-              Linking.openURL('whatsapp://send?text=hello&phone=03022988532');
+              //  Linking.openURL('whatsapp://send?text=hello&phone=03022988532');
             }}
           />
         </View>
@@ -119,16 +159,23 @@ const Dail = () => {
 
   return (
     <View style={styles.mainView}>
-      <View style={styles.topView}>
-        <AnimatedSearchBar />
-      </View>
+      {/* <View style={styles.topView}>
+        <AnimatedSearchBar dataFromChild={handleDataFromChild} />
+      </View> */}
+      {loading ? (
+        <ActivityIndicator color="black" style={{margin: 15}} />
+      ) : null}
       <FlatList
         data={outgoing}
         //data defined in constructor
         ItemSeparatorComponent={ItemSeparatorView}
         //Item Separator View
+        initialNumToRender={100}
+        // for slow list
         renderItem={ItemView}
         keyExtractor={(item, index) => index.toString()}
+        // windowSize={5}
+        // onEndReachedThreshold={0.2}
       />
     </View>
   );

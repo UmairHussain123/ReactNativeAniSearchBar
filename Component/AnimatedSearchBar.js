@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   TextInput,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, memo} from 'react';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -34,7 +34,10 @@ const AnimatedSearchBar = ({dataFromChild}) => {
         }}></TextInput>
 
       <TouchableOpacity
-        style={{backgroundColor: 'lightgray', borderRadius: 15}}
+        style={{
+          backgroundColor: 'lightgray',
+          borderRadius: 15,
+        }}
         onPress={() => {
           if (animation.value == 1) {
             animation.value = 0;
@@ -47,8 +50,8 @@ const AnimatedSearchBar = ({dataFromChild}) => {
         <Image
           source={
             valueForIcon == 1
-              ? require('../Assets/search1.png')
-              : require('../Assets/multiply.png')
+              ? require('../Assets/search8.png')
+              : require('../Assets/multiply2.png')
           }
         />
       </TouchableOpacity>
@@ -56,7 +59,7 @@ const AnimatedSearchBar = ({dataFromChild}) => {
   );
 };
 
-export default AnimatedSearchBar;
+export default memo(AnimatedSearchBar);
 
 const styles = StyleSheet.create({
   img: {
