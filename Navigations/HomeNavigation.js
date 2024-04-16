@@ -7,6 +7,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 //import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import AllTimeCall from '../Screens/AllTimeCall';
 
 //import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 const Tab = createMaterialBottomTabNavigator();
@@ -19,6 +20,15 @@ const HomeNavigation = () => {
       activeColor="#49454f"
       inactiveColor="#49454f"
       barStyle={{backgroundColor: '#f3edf6'}}>
+      <Tab.Screen
+        name="AllTimeCall"
+        component={AllTimeCall}
+        options={{
+          tabBarIcon: () => {
+            return <Icon name="phone-log" size={size} color={color} />;
+          },
+        }}
+      />
       <Tab.Screen
         name="Dail"
         component={Dail}

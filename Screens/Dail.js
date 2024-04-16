@@ -12,25 +12,22 @@ import CallLog from 'react-native-call-log';
 import {ActivityIndicator, Avatar, IconButton} from 'react-native-paper';
 import call from 'react-native-phone-call';
 import randomColor from 'randomcolor';
-
+import List from '../Component/List';
+import {createShimmerPlaceholder} from 'react-native-shimmer-placeholder';
+import LinearGradient from 'react-native-linear-gradient';
+const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient);
 const Dail = () => {
   const [listData, setListDate] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [dataFromChild, setDataFromChild] = useState('');
 
-  const handleDataFromChild = useCallback(
-    data => {
-      setDataFromChild(data);
-    },
-    [dataFromChild],
-  );
+  const avatarRef = React.createRef();
+  const firstLineRef = React.createRef();
 
-  console.log(dataFromChild);
   const dateInTimestamp = () => {
     const currentDate = new Date();
 
     // Subtract one month from the current date
-    currentDate.setMonth(currentDate.getMonth() - 1);
+    currentDate.setMonth(currentDate.getMonth() - 10);
 
     // Get the ISO string representation of the date
     const isoString = currentDate.toISOString();
@@ -84,78 +81,17 @@ const Dail = () => {
     // fetchCallLog();
   }, []);
 
-  const ItemView = ({item}) => {
-    const colorAvatar = randomColor();
-    return (
-      // FlatList Item
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          margin: 20,
-        }}>
-        <View style={styles.contactView}>
-          <View style={styles.avatarView}>
-            {item.name ? (
-              <Avatar.Text
-                size={50}
-                label={item.name.charAt(0)}
-                //  style={{backgroundColor: randomColor()}}
-              />
-            ) : (
-              <Avatar.Image size={40} source={require('../Assets/user.png')} />
-            )}
-          </View>
-          <View style={styles.contactInfo}>
-            <Text style={{fontWeight: 'bold'}}>
-              {item.name ? item.name : item.phoneNumber}
-            </Text>
-            <Text> {item.dateTime} </Text>
-            {/* <Text>{item.duration}</Text> */}
-          </View>
-        </View>
-        <View>
-          <IconButton
-            icon="phone"
-            iconColor={'#6750a4'}
-            size={25}
-            onPress={() => {
-              const args = {
-                number: item.phoneNumber, // String value with the number to call
-                prompt: false, // Optional boolean property. Determines if the user should be prompted prior to the call
-                skipCanOpen: true, // Skip the canOpenURL check
-              };
-              call(args).catch(console.error);
+  //const outgoing = listData.filter(obj => obj.type == 'OUTGOING');
 
-              // for sms
-              // Linking.openURL(
-              //   `sms:/${item.phoneNumber}?addresses=${item.phoneNumber}&body=aa}`,
-              // );
-              // for wattsup
-              //  Linking.openURL('whatsapp://send?text=hello&phone=03022988532');
-            }}
-          />
-        </View>
-      </View>
-    );
-  };
-  const outgoing = listData.filter(obj => obj.type == 'OUTGOING');
+  const outgoing = listData
+    .filter(obj => obj.type === 'OUTGOING')
+    .map((obj, index) => ({
+      ...obj,
+      color: randomColor(),
+    }));
+
   const missed = listData.filter(obj => obj.type == 'MISSED');
   const incoming = listData.filter(obj => obj.type == 'INCOMING');
-
-  // console.log('>>>>>', newArray);
-  const ItemSeparatorView = () => {
-    return (
-      // FlatList Item Separator
-      <View
-        style={{
-          height: 0.5,
-          width: '100%',
-          backgroundColor: '#C8C8C8',
-        }}
-      />
-    );
-  };
 
   return (
     <View style={styles.mainView}>
@@ -163,20 +99,34 @@ const Dail = () => {
         <AnimatedSearchBar dataFromChild={handleDataFromChild} />
       </View> */}
       {loading ? (
-        <ActivityIndicator color="black" style={{margin: 15}} />
+        <FlatList
+          data={[1, 1, 1, 1, 1, 1, 1, 1, , 1, 1]}
+          renderItem={() => {
+            return (
+              <View style={{flexDirection: 'row', padding: 20}}>
+                <ShimmerPlaceholder
+                  ref={avatarRef}
+                  style={{borderRadius: 50, width: 50, height: 50}}
+                  shimmerColors={['#eaddff', '#f3edf7', '#cdd3ff']}
+                />
+                <View style={{marginLeft: 10}}>
+                  <ShimmerPlaceholder
+                    ref={firstLineRef}
+                    style={{width: '100%', height: 50}}
+                    shimmerColors={['#eaddff', '#b5bcf1', '#cdd3ff']}
+                  />
+                  {/* <ShimmerPlaceholder
+               ref={secondLineRef}
+               stopAutoRun
+               style={{width: '100%'}}
+             /> */}
+                  {/* <ShimmerPlaceholder ref={thirdLineRef} stopAutoRun /> */}
+                </View>
+              </View>
+            );
+          }}></FlatList>
       ) : null}
-      <FlatList
-        data={outgoing}
-        //data defined in constructor
-        ItemSeparatorComponent={ItemSeparatorView}
-        //Item Separator View
-        initialNumToRender={100}
-        // for slow list
-        renderItem={ItemView}
-        keyExtractor={(item, index) => index.toString()}
-        // windowSize={5}
-        // onEndReachedThreshold={0.2}
-      />
+      <List data={outgoing}></List>
     </View>
   );
 };
