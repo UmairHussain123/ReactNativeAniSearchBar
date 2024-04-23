@@ -21,7 +21,7 @@ const HomeNavigation = () => {
       inactiveColor="#49454f"
       barStyle={{backgroundColor: '#f3edf6'}}>
       <Tab.Screen
-        name="AllTimeCall"
+        name="All Time Call"
         component={AllTimeCall}
         options={{
           tabBarIcon: () => {
@@ -48,7 +48,7 @@ const HomeNavigation = () => {
         }}
       />
       <Tab.Screen
-        name="Incoming"
+        name="Received"
         component={Incoming}
         options={{
           tabBarIcon: () => {

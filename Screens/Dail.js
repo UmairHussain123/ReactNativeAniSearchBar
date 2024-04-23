@@ -83,15 +83,15 @@ const Dail = () => {
 
   //const outgoing = listData.filter(obj => obj.type == 'OUTGOING');
 
-  const outgoing = listData
-    .filter(obj => obj.type === 'OUTGOING')
-    .map((obj, index) => ({
-      ...obj,
-      color: randomColor(),
-    }));
+  // const outgoing = listData
+  //   .filter(obj => obj.type === 'OUTGOING')
+  //   .map((obj, index) => ({
+  //     ...obj,
+  //     color: randomColor(),
+  //   }));
 
-  const missed = listData.filter(obj => obj.type == 'MISSED');
-  const incoming = listData.filter(obj => obj.type == 'INCOMING');
+  //const missed = listData.filter(obj => obj.type == 'MISSED');
+  //const incoming = listData.filter(obj => obj.type == 'INCOMING');
 
   return (
     <View style={styles.mainView}>
@@ -126,7 +126,7 @@ const Dail = () => {
             );
           }}></FlatList>
       ) : null}
-      <List data={outgoing}></List>
+      <List data={listData}></List>
     </View>
   );
 };

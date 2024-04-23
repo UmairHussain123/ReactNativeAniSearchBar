@@ -34,7 +34,7 @@ const AllTimeCall = () => {
           );
           if (granted === PermissionsAndroid.RESULTS.GRANTED) {
             CallLogs.loadAll().then(c => setListDate(c));
-            CallLogs.load(3).then(c => console.log(c));
+            //  CallLogs.load(3).then(c => console.log(c));
           } else {
             alert('Call Log permission denied');
           }
@@ -91,7 +91,7 @@ const AllTimeCall = () => {
       <View>
         <Text style={styles.titleText}>All-time call log history</Text>
         <Text style={{justifyContent: 'center'}}>
-          (wait this will take some time)
+          {!listData ? 'wait this will take some time' : ''}{' '}
         </Text>
         <FlatList
           data={listData}

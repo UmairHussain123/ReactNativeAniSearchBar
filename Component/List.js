@@ -91,12 +91,12 @@ const List = ({data}) => {
         //data defined in constructor
         ItemSeparatorComponent={ItemSeparatorView}
         //Item Separator View
-        initialNumToRender={20}
+        initialNumToRender={10}
         // for slow list
         renderItem={ItemView}
         keyExtractor={(item, index) => index.toString()}
         // windowSize={5}
-        onEndReachedThreshold={0.5}
+        onEndReachedThreshold={0.1}
       />
     </View>
   );
